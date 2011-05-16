@@ -63,20 +63,6 @@ module Rack
           where(:client_id => client_id).offset(offset).limit(limit).order(:created_at)
         end
 
-        
-        # def self.historical(filter = {})
-        #   # days = filter[:days] || 60
-        #   # select = { :$gt=> { :created_at=>Time.now - 86400 * days } }
-        #   # select = {}
-        # 
-        #   if filter.has_key?(:client_id)
-        #     conditions << "client_id = ?" << filter[:client_id]
-        #   end
-        # 
-        #   raw = Server::AccessToken.collection.group("function (token) { return { ts: Math.floor(token.created_at / 86400) } }",
-        #     select, { :granted=>0 }, "function (token, state) { state.granted++ }")
-        #   raw.sort { |a, b| a["ts"] - b["ts"] }
-        # end
 
         # Updates the last access timestamp.
         def access!
