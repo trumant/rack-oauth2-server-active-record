@@ -62,6 +62,20 @@ module Rack
         def self.for_client(client_id, offset = 0, limit = 100)
           where(:client_id => client_id).offset(offset).limit(limit).order(:created_at)
         end
+        
+        def self.historical(filter = {})
+          days = filter[:days] || 60
+         	if filter.has_key?(:client_id)
+         	  self.where(:client => filter[:client_id])
+         	end
+         	recs = self.where(:created_at => ((Time.now - days.days)..Time.now)).order(:created_at).group_by{|r| r.created_at.to_i / 86400}
+         	
+         	return recs.map{ |k,v| {"ts" => k, "granted" => v.size}}
+         	
+         	# Json should look like this:  (ts is number of days since Epoch), (granted is how many token were awarded that day)
+         	         #{"data":[{"ts":15084.0,"granted":1.0},{"ts":15092.0,"granted":1.0},{"ts":15093.0,"granted":1.0},{"ts":15109.0,"granted":1.0},{"ts":15110.0,"granted":1.0}]}
+         	
+        end
 
 
         # Updates the last access timestamp.

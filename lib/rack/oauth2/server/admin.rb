@@ -139,7 +139,7 @@ module Rack
 
         get "/api/clients/history" do
           content_type "application/json"
-          { :data => Server::AccessToken.where(:created_at => ((Time.now - 60.days)..Time.now)) }.to_json
+          { :data => Server::AccessToken.historical }.to_json
         end
 
         post "/api/clients" do
@@ -175,7 +175,7 @@ module Rack
         get "/api/client/:id/history" do
           content_type "application/json"
           client = Server::Client.find(params[:id])
-          { :data => Server::AccessToken.where(:client_id => client.id, :created_at => ((Time.now - 60.days)..Time.now)) }.to_json
+          { :data => Server::AccessToken.historical(:client_id => client.id) }.to_json
         end
 
         put "/api/client/:id" do
